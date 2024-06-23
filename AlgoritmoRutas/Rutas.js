@@ -150,7 +150,7 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
                     rutas.splice(rutas.indexOf(ruta_i), 1);
                     rutas.splice(rutas.indexOf(ruta_j), 1);
 
-                    if(condicion3 == true && condicion4 == false){
+                    if(condicion3 == true && condicion4 == false && ((ruta_i.length != 3 && ruta_j.length != 3) || (ruta_i.length == 3 && ruta_j.length != 3))){
                         let nuevaRuta = ruta_j.slice(0,-1).concat(ruta_i.slice(1));
                         if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
                             rutas.push(nuevaRuta);
@@ -164,7 +164,7 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
                             rutas.push(ruta_j);
                         }
                         
-                    } else if (condicion3 == false && condicion4 == true){
+                    } else if (condicion3 == false && condicion4 == true && ((ruta_i.length != 3 && ruta_j.length != 3) || (ruta_i.length != 3 && ruta_j.length == 3))){
                         let nuevaRuta = ruta_i.slice(0,-1).concat(ruta_j.slice(1));
                         if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
                             rutas.push(nuevaRuta);
@@ -177,6 +177,32 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
                             rutas.push(ruta_i);
                             rutas.push(ruta_j);
                         
+                        }
+                    } else if (condicion3 == true && condicion4 == true && ((ruta_i.length == 3 && ruta_j.length == 3) || (ruta_i.length == 3 && ruta_j.length != 3))){
+                        let nuevaRuta = ruta_i.slice(0,-1).concat(ruta_j.slice(1));
+                        if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
+                            rutas.push(nuevaRuta);
+                            if(rutas.length < vehicles){
+                                rutas.pop();
+                                rutas.push(ruta_i);
+                                rutas.push(ruta_j);
+                            }
+                        } else{
+                            rutas.push(ruta_i);
+                            rutas.push(ruta_j);
+                        }
+                    } else if(condicion3 == true && condicion4 == true && ruta_i.length != 3 && ruta_j.length == 3){
+                        let nuevaRuta = ruta_j.slice(0,-1).concat(ruta_i.slice(1));
+                        if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
+                            rutas.push(nuevaRuta);
+                            if(rutas.length < vehicles){
+                                rutas.pop();
+                                rutas.push(ruta_i);
+                                rutas.push(ruta_j);
+                            }
+                        } else{
+                            rutas.push(ruta_i);
+                            rutas.push(ruta_j);
                         }
                     } else{
                         let nuevaRuta = ruta_i.slice(0,-1).concat(ruta_j.slice(1));
@@ -216,7 +242,7 @@ const matriz = [
 
 const demandas = [0, 4, 6, 5, 4, 7, 3, 5, 4, 4]
 const capacidad = 23
-const vehicles = 2
+const vehicles = 3
 const clients = 9
 
 generarRutas(matriz, vehicles, clients, demandas, capacidad)
