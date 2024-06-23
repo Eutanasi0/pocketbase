@@ -1,16 +1,14 @@
-/*function clientesAtender(rutas, clients){
-
-    let clientesVisitados = [];
+function distanciaRutas(rutas, matriz){
+    let distanciasTotales = [];
     for(let i = 0; i < rutas.length; i++){
-        for(let j = 1; j <= clients; j++){
-            if(rutas[i].includes(j) && !clientesVisitados.includes(j)){
-                clientesVisitados.push(j);
-            }
+        let distanciaR = 0;
+        for(let j = 0; j < rutas[i].length - 1; j++){
+            distanciaR += matriz[rutas[i][j]][rutas[i][j+1]];
         }
+        distanciasTotales.push(distanciaR);
     }
-
-    return (clientesVisitados.length == clients);
-}*/
+    return distanciasTotales;
+}
 
 function encontrarRuta(rutas, cliente){
     for(let i = 0; i < rutas.length; i++){
@@ -59,18 +57,19 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
     //let clientesAtendidos = false;
 
     for(let i = 1; i <= vehicles; i++){
-        if( i <= clients){
+        if(i <= clients){
             rutas.push([0, i, 0]);
         } else{
             rutas.push([0, 0]);
         }
     }
 
-
     for(let i = 1; i < clients; i++){
         for(let j = i+1; j <= clients; j++){
+            let a = Math.max(i, j);
+            let b = Math.min(i, j);
             let saving = distanceMatrix[0][i] + distanceMatrix[0][j] - distanceMatrix[i][j];
-            savings.push([saving, i, j]);
+            savings.push([saving, a, b]);
         }
     }
 
@@ -195,31 +194,29 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
                     }
                 }
             }
-            if(rutas.length > vehicles){
-                rutas.pop();
-            }
-            //clientesAtendidos = clientesAtender(rutas, clients);
-            //console.log(rutas);
         }
     }
     console.log(savings);
     console.log(rutas);
+    console.log(distanciaRutas(rutas, distanceMatrix));
 }
 
 const matriz = [
-    [0, 2, 9, 10, 7, 4, 8, 5],
-    [2, 0, 6, 12, 8, 9, 10, 6],
-    [9, 6, 0, 3, 6, 9, 4, 9],
-    [10, 12, 3, 0, 11, 12, 5, 11],
-    [7, 8, 6, 11, 0, 8, 9, 8],
-    [4, 9, 9, 12, 8, 0, 7, 6],
-    [8, 10, 4, 5, 9, 7, 0, 5],
-    [5, 6, 9, 11, 8, 6, 5, 0]
-    ]
+    [0, 25, 43, 57, 43, 61, 29, 41, 48, 71],
+    [25, 0, 29, 34, 43, 68, 49, 66, 72, 91],
+    [43, 29, 0, 52, 72, 96, 72, 81, 89, 114],
+    [57, 34, 52, 0, 45, 71, 71, 95, 99, 108],
+    [43, 43, 72, 45, 0, 27, 36, 65, 65 ,65],
+    [61, 68, 96, 71, 27, 0, 40, 66, 62, 46],
+    [29, 49, 72, 71, 36, 40, 0, 31, 31, 43],
+    [41, 66, 81, 95, 65, 66, 31, 0, 11, 46],
+    [48, 72, 89, 99, 65, 62, 31, 11, 0, 36],
+    [71, 91, 114, 108, 65, 46, 43, 46, 36, 0]    
+]
 
-const demandas = [0, 2, 4, 2, 5, 1, 3, 1]
-const capacidad = 7
-const vehicles = 3
-const clients = 7
+const demandas = [0, 4, 6, 5, 4, 7, 3, 5, 4, 4]
+const capacidad = 23
+const vehicles = 2
+const clients = 9
 
 generarRutas(matriz, vehicles, clients, demandas, capacidad)
