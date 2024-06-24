@@ -1,227 +1,74 @@
-function distanciaRutas(rutas, matriz){
-    let distanciasTotales = [];
-    for(let i = 0; i < rutas.length; i++){
-        let distanciaR = 0;
-        for(let j = 0; j < rutas[i].length - 1; j++){
-            distanciaR += matriz[rutas[i][j]][rutas[i][j+1]];
-        }
-        distanciasTotales.push(distanciaR);
-    }
-    return distanciasTotales;
+function distanciaRutas(rutas, matriz) {
+    return rutas.map(ruta => ruta.slice(0, -1).reduce((distancia, punto, index) => distancia + matriz[punto][ruta[index + 1]], 0));
 }
 
-function encontrarRuta(rutas, cliente){
-    for(let i = 0; i < rutas.length; i++){
-        if(rutas[i].includes(cliente)){
-            return rutas[i];
-        }
-    }
-    return null;
+function encontrarRuta(rutas, cliente) {
+    return rutas.find(ruta => ruta.includes(cliente)) || null;
 }
 
-function comprobarPuntoInterior(rutas, cliente){
-    let indice = -1;
-
-    for(let i = 0; i < rutas.length; i++){
-        if(rutas[i].includes(cliente)){
-            indice = rutas[i].indexOf(cliente);
-            if(indice == 1 || indice == rutas[i].length - 2){
-                return false;
-            } else{
-                return true;
-            }
-        }
-    }
+function comprobarPuntoInterior(ruta, cliente) {
+    const indice = ruta.indexOf(cliente);
+    return indice > 1 && indice < ruta.length - 2;
 }
 
-function comprobarPrimeroLista(rutas, cliente){
-    for(let i = 0; i < rutas.length; i++){
-        if(rutas[i][1] == cliente){
-            return true;
-        }
-    }
-    return false;
+function comprobarPrimeroLista(ruta, cliente) {
+    return ruta[1] === cliente;
 }
 
-function calcularCargaRuta(ruta, demandas){
-    let cargaT = 0;
-    for(let i = 1; i < ruta.length - 1; i++){
-        cargaT += demandas[ruta[i]];
-    }
-    return cargaT;
+function calcularCargaRuta(ruta, demandas) {
+    return ruta.slice(1, -1).reduce((carga, cliente) => carga + demandas[cliente], 0);
 }
 
-function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
-    let rutas = [];
+function combinarRutas(ruta1, ruta2, demandas, capacidad) {
+    const nuevaRuta = [...ruta1.slice(0, -1), ...ruta2.slice(1)];
+    return calcularCargaRuta(nuevaRuta, demandas) <= capacidad ? nuevaRuta : null;
+}
+
+function calcularSavings(distanceMatrix, clients) {
     let savings = [];
-    //let clientesAtendidos = false;
-
-    for(let i = 1; i <= vehicles; i++){
-        if(i <= clients){
-            rutas.push([0, i, 0]);
-        } else{
-            rutas.push([0, 0]);
+    for (let i = 1; i < clients; i++) {
+        for (let j = i + 1; j <= clients; j++) {
+            const saving = distanceMatrix[0][i] + distanceMatrix[0][j] - distanceMatrix[i][j];
+            savings.push([saving, i, j]);
         }
     }
-
-    for(let i = 1; i < clients; i++){
-        for(let j = i+1; j <= clients; j++){
-            let a = Math.max(i, j);
-            let b = Math.min(i, j);
-            let saving = distanceMatrix[0][i] + distanceMatrix[0][j] - distanceMatrix[i][j];
-            savings.push([saving, a, b]);
-        }
-    }
-
     savings.sort((a, b) => b[0] - a[0]);
+    return savings;
+}
 
+function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad) {
+    let rutas = Array.from({ length: clients }, (_, i) => (i < vehicles ? [0, i + 1, 0] : null)).filter(r => r);
+    let savings = calcularSavings(distanceMatrix, clients);
 
-    for(let i=0; i < savings.length; i++){
-        if(rutas.length >= vehicles){
-            let ruta_i = encontrarRuta(rutas, savings[i][1]);
-            let ruta_j = encontrarRuta(rutas, savings[i][2]);
-            
-            if(ruta_i == null && ruta_j == null){
-                nuevaRuta = [0, savings[i][1], savings[i][2], 0];
-                if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
-                    rutas.push(nuevaRuta); 
-                }   
-            }
+    for (const [saving, a, b] of savings) {
+        let rutaA = encontrarRuta(rutas, a);
+        let rutaB = encontrarRuta(rutas, b);
 
-            else if(ruta_i != null && ruta_j == null){
-                let condicion1 = comprobarPuntoInterior(rutas, savings[i][1]); 
-                
-                if(condicion1 == false){
-                    let condicion2 = comprobarPrimeroLista(rutas, savings[i][1]);
-                    rutas.splice(rutas.indexOf(ruta_i), 1);
-                    if(condicion2 == true && ruta_i.length != 3){
-                        let nuevaRuta = [0, savings[i][2]].concat(ruta_i.slice(1));
-                        if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
-                            rutas.push(nuevaRuta);
-                        } else{
-                            rutas.push(ruta_i);
-                        }
-                        
-                    } else{
-                        let nuevaRuta = ruta_i.slice(0,-1).concat([savings[i][2], 0]);
-                        if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
-                            rutas.push(nuevaRuta);
-                        } else{
-                            rutas.push(ruta_i);
-                        
-                        }
-                    }
-                }
-            }
-
-            else if(ruta_i == null && ruta_j != null){
-                let condicion1 = comprobarPuntoInterior(rutas, savings[i][2]);
-
-                if(condicion1 == false){
-                    let condicion2 = comprobarPrimeroLista(rutas, savings[i][2]);
-                    rutas.splice(rutas.indexOf(ruta_j), 1);
-                    if(condicion2 == true && ruta_j.length != 3){
-                        let nuevaRuta  = [0, savings[i][1]].concat(ruta_j.slice(1));
-                        if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
-                            rutas.push(nuevaRuta);
-                        } else{
-                            rutas.push(ruta_j);
-                        }
-                    } else{
-                        let nuevaRuta = ruta_j.slice(0,-1).concat([savings[i][1], 0]);
-                        if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
-                            rutas.push(nuevaRuta);
-                        } else{
-                            rutas.push(ruta_j);
-                        }
-                        
-                    }
-                }
-            }
-
-            if(ruta_i != null && ruta_j != null && ruta_i != ruta_j){
-                let condicion1 = comprobarPuntoInterior(rutas, savings[i][1]);
-                let condicion2 = comprobarPuntoInterior(rutas, savings[i][2]);
-
-                if(condicion1 == false && condicion2 == false){
-                    let condicion3 = comprobarPrimeroLista(rutas, savings[i][1]);
-                    let condicion4 = comprobarPrimeroLista(rutas, savings[i][2]);
-
-                    rutas.splice(rutas.indexOf(ruta_i), 1);
-                    rutas.splice(rutas.indexOf(ruta_j), 1);
-
-                    if(condicion3 == true && condicion4 == false && ((ruta_i.length != 3 && ruta_j.length != 3) || (ruta_i.length == 3 && ruta_j.length != 3))){
-                        let nuevaRuta = ruta_j.slice(0,-1).concat(ruta_i.slice(1));
-                        if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
-                            rutas.push(nuevaRuta);
-                            if(rutas.length < vehicles){
-                                rutas.pop();
-                                rutas.push(ruta_i);
-                                rutas.push(ruta_j);
-                            }
-                        } else{
-                            rutas.push(ruta_i);
-                            rutas.push(ruta_j);
-                        }
-                        
-                    } else if (condicion3 == false && condicion4 == true && ((ruta_i.length != 3 && ruta_j.length != 3) || (ruta_i.length != 3 && ruta_j.length == 3))){
-                        let nuevaRuta = ruta_i.slice(0,-1).concat(ruta_j.slice(1));
-                        if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
-                            rutas.push(nuevaRuta);
-                            if(rutas.length < vehicles){
-                                rutas.pop();
-                                rutas.push(ruta_i);
-                                rutas.push(ruta_j);
-                            }
-                        } else{
-                            rutas.push(ruta_i);
-                            rutas.push(ruta_j);
-                        
-                        }
-                    } else if (condicion3 == true && condicion4 == true && ((ruta_i.length == 3 && ruta_j.length == 3) || (ruta_i.length == 3 && ruta_j.length != 3))){
-                        let nuevaRuta = ruta_i.slice(0,-1).concat(ruta_j.slice(1));
-                        if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
-                            rutas.push(nuevaRuta);
-                            if(rutas.length < vehicles){
-                                rutas.pop();
-                                rutas.push(ruta_i);
-                                rutas.push(ruta_j);
-                            }
-                        } else{
-                            rutas.push(ruta_i);
-                            rutas.push(ruta_j);
-                        }
-                    } else if(condicion3 == true && condicion4 == true && ruta_i.length != 3 && ruta_j.length == 3){
-                        let nuevaRuta = ruta_j.slice(0,-1).concat(ruta_i.slice(1));
-                        if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
-                            rutas.push(nuevaRuta);
-                            if(rutas.length < vehicles){
-                                rutas.pop();
-                                rutas.push(ruta_i);
-                                rutas.push(ruta_j);
-                            }
-                        } else{
-                            rutas.push(ruta_i);
-                            rutas.push(ruta_j);
-                        }
-                    } else{
-                        let nuevaRuta = ruta_i.slice(0,-1).concat(ruta_j.slice(1));
-                        if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
-                            rutas.push(nuevaRuta);
-                            if(rutas.length < vehicles){
-                                rutas.pop();
-                                rutas.push(ruta_i);
-                                rutas.push(ruta_j);
-                            }
-                        } else{
-                            rutas.push(ruta_i);
-                            rutas.push(ruta_j);
-                        }
-                    }
-                }
-            }
+        if (!rutaA && !rutaB) {
+            const nuevaRuta = [0, a, b, 0];
+            if (calcularCargaRuta(nuevaRuta, demandas) <= capacidad) rutas.push(nuevaRuta);
+        } else if (rutaA && !rutaB && !comprobarPuntoInterior(rutaA, a)) {
+            rutas = rutas.filter(r => r !== rutaA);
+            const nuevaRuta = comprobarPrimeroLista(rutaA, a)
+                ? [0, b, ...rutaA.slice(1)]
+                : [...rutaA.slice(0, -1), b, 0];
+            if (calcularCargaRuta(nuevaRuta, demandas) <= capacidad) rutas.push(nuevaRuta);
+            else rutas.push(rutaA);
+        } else if (!rutaA && rutaB && !comprobarPuntoInterior(rutaB, b)) {
+            rutas = rutas.filter(r => r !== rutaB);
+            const nuevaRuta = comprobarPrimeroLista(rutaB, b)
+                ? [0, a, ...rutaB.slice(1)]
+                : [...rutaB.slice(0, -1), a, 0];
+            if (calcularCargaRuta(nuevaRuta, demandas) <= capacidad) rutas.push(nuevaRuta);
+            else rutas.push(rutaB);
+        } else if (rutaA && rutaB && rutaA !== rutaB && !comprobarPuntoInterior(rutaA, a) && !comprobarPuntoInterior(rutaB, b)) {
+            rutas = rutas.filter(r => r !== rutaA && r !== rutaB);
+            const nuevaRuta = comprobarPrimeroLista(rutaA, a) ? combinarRutas(rutaA, rutaB, demandas, capacidad) : combinarRutas(rutaB, rutaA, demandas, capacidad);
+            if (nuevaRuta) rutas.push(nuevaRuta);
+            else rutas.push(rutaA, rutaB);
         }
     }
+
     console.log(savings);
     console.log(rutas);
     console.log(distanciaRutas(rutas, distanceMatrix));
@@ -237,12 +84,12 @@ const matriz = [
     [29, 49, 72, 71, 36, 40, 0, 31, 31, 43],
     [41, 66, 81, 95, 65, 66, 31, 0, 11, 46],
     [48, 72, 89, 99, 65, 62, 31, 11, 0, 36],
-    [71, 91, 114, 108, 65, 46, 43, 46, 36, 0]    
-]
+    [71, 91, 114, 108, 65, 46, 43, 46, 36, 0]
+];
 
-const demandas = [0, 4, 6, 5, 4, 7, 3, 5, 4, 4]
-const capacidad = 23
-const vehicles = 3
-const clients = 9
+const demandas = [0, 4, 6, 5, 4, 7, 3, 5, 4, 4];
+const capacidad = 23;
+const vehicles = 3;
+const clients = 9;
 
-generarRutas(matriz, vehicles, clients, demandas, capacidad)
+generarRutas(matriz, vehicles, clients, demandas, capacidad);
