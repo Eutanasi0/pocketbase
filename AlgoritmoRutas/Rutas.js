@@ -1,47 +1,52 @@
-function distanciaRutas(rutas, matriz) {
-    return rutas.map(ruta => ruta.slice(0, -1).reduce((distancia, punto, index) => distancia + matriz[punto][ruta[index + 1]], 0));
-}
-
 /*
-Gracias a la función map solo itera una vez
-además solo necesita encontrar 
-el índice del cliente en una 
-sola ruta, lo cual este coso
-es una operación constante.
 
-según gpeton dice que tiene una notación de O(m) y el que me hiciste
+Esto de aquí es para la función distanciaRutas
+
+Funcion .map
+Se utilizamos el método map para iterar sobre
+cada ruta en el array rutas esto es para transformar cada ruta en su distancia total de manera
+más eficiente y no se ve un bucle pero si lo hay xdd
+
+
+Funcion .reduce
+El método reduce para calcular la distancia total de cada ruta. 
+Este método itera sobre los puntos de la ruta (excepto el último punto, ya que slice(0, -1)
+lo excluye) y acumula la distancia total sumando las distancias entre puntos consecutivos, utilizando la matriz de distancias.
+
+Estos son métodos de orden superior y en teoría son más eficientes que los bucles for anidados
+
+Además según gpeton dice que tiene una notación de O(m) y el que me hiciste
 es O(n * m) donde n es el número de rutas y m es la longitud promedio de cada ruta.
 
 
 En cambio el mio solo calcula la logitud de ruta y no tiene que hacer el proceso engorroso 
 */
 
-function encontrarRuta(rutas, cliente) {
-    return rutas.find(ruta => ruta.includes(cliente)) || null;
+
+function distanciaRutas(rutas, matriz) {
+    return rutas.map(ruta => ruta.slice(0, -1).reduce((distancia, punto, index) => distancia + matriz[punto][ruta[index + 1]], 0));
 }
+
 /*
 Aquí solo encontré que find es lo mismo que hacer un bucle
 pero se ve más bonito xdd
 */
 
+function encontrarRuta(rutas, cliente) {
+    return rutas.find(ruta => ruta.includes(cliente)) || null;
+}
+
+
+/*
+Esto de aquí es lo mismo que hacer un bucle for solo que utilizo el método indexOf
+dale una revisada si no entiendes
+*/
 
 function comprobarPuntoInterior(ruta, cliente) {
     const indice = ruta.indexOf(cliente);
     return indice > 1 && indice < ruta.length - 2;
 }
 
-/*function comprobarPrimeroLista(rutas, cliente){
-    for(let i = 0; i < rutas.length; i++){
-        if(rutas[i][1] == cliente){
-            return true;
-        }
-    }
-    return false;
-}*/
-
-function comprobarPrimeroLista(rutas, cliente) {
-    return rutas.some(ruta => ruta[1] === cliente);
-}  //Utilizamos el método some es mucho más eficaz que hacer un bucle for xddd
 
 /* 
 La función some recorre las rutas y devuelve true
@@ -49,6 +54,15 @@ cuando encuentre una ruta en la que el segundo elemento
 (índice 1) sea igual al cliente. 
 Si no encuentra, devuelve false.
 */
+
+
+function comprobarPrimeroLista(rutas, cliente) {
+    return rutas.some(ruta => ruta[1] === cliente);
+}  //Utilizamos el método some es mucho más eficaz que hacer un bucle for xddd
+
+
+//Esto no sabría cómo hacerlo, no encontré nada para poder hacerlo de manera más eficiente
+//Si encuentras algo me avisas
 
 function calcularCargaRuta(ruta, demandas){
     let cargaT = 0;
