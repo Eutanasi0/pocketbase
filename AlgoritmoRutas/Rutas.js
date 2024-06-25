@@ -71,8 +71,7 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad) {
 
     console.log(savings);
     console.log(rutas);
-    console.log(distanciaRutas(rutas, distanceMatrix));
-}
+    console.log(distanciaRutas(rutas, distanceMatrix));}
 
 const matriz = [
     [0, 25, 43, 57, 43, 61, 29, 41, 48, 71],
