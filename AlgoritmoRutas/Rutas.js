@@ -22,7 +22,6 @@ es O(n * m) donde n es el número de rutas y m es la longitud promedio de cada r
 En cambio el mio solo calcula la logitud de ruta y no tiene que hacer el proceso engorroso 
 */
 
-
 function distanciaRutas(rutas, matriz) {
     return rutas.map(ruta => ruta.slice(0, -1).reduce((distancia, punto, index) => distancia + matriz[punto][ruta[index + 1]], 0));
 }
@@ -90,6 +89,7 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
 
 
     for(let i=0; i < savings.length; i++){
+        console.log(rutas)
         let ruta_i = encontrarRuta(rutas, savings[i][1]);
         let ruta_j = encontrarRuta(rutas, savings[i][2]);
             
@@ -105,11 +105,16 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
                 
             if(condicion1 == false){
                 let condicion2 = comprobarPrimeroLista(rutas, savings[i][1]);
+                let totalElementos = rutas.reduce((cont,ruta) => cont + ruta.length, 0);
+                let longitudRutas = rutas.length;
                 rutas.splice(rutas.indexOf(ruta_i), 1);
                 if(condicion2 == true){
                     let nuevaRuta = [0, savings[i][2]].concat(ruta_i.slice(1));
                     if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
                         rutas.push(nuevaRuta);
+                    } else if(totalElementos == (clients + 2*longitudRutas) - 1){
+                        rutas.push(ruta_i);
+                        rutas.push([0, savings[i][2], 0]);
                     } else{
                         rutas.push(ruta_i);
                     }
@@ -118,6 +123,9 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
                     let nuevaRuta = ruta_i.slice(0,-1).concat([savings[i][2], 0]);
                     if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
                         rutas.push(nuevaRuta);
+                    } else if(totalElementos == (clients + 2*longitudRutas) - 1){
+                        rutas.push(ruta_i);
+                        rutas.push([0, savings[i][2], 0]);
                     } else{
                         rutas.push(ruta_i);
                         
@@ -131,11 +139,16 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
 
             if(condicion1 == false){
                 let condicion2 = comprobarPrimeroLista(rutas, savings[i][2]);
+                let totalElementos = rutas.reduce((cont,ruta) => cont + ruta.length, 0);
+                let longitudRutas = rutas.length;
                 rutas.splice(rutas.indexOf(ruta_j), 1);
                 if(condicion2 == true){
                     let nuevaRuta  = [0, savings[i][1]].concat(ruta_j.slice(1));
                     if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
                         rutas.push(nuevaRuta);
+                    } else if(totalElementos == (clients + 2*longitudRutas) - 1){
+                        rutas.push(ruta_j);
+                        rutas.push([0, savings[i][1], 0]);
                     } else{
                         rutas.push(ruta_j);
                     }
@@ -143,6 +156,9 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
                     let nuevaRuta = ruta_j.slice(0,-1).concat([savings[i][1], 0]);
                     if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
                         rutas.push(nuevaRuta);
+                    } else if(totalElementos == (clients + 2*longitudRutas) - 1){
+                        rutas.push(ruta_j);
+                        rutas.push([0, savings[i][1], 0]);
                     } else{
                         rutas.push(ruta_j);
                     }
@@ -212,7 +228,7 @@ const matriz = [
 ]
 
 const demandas = [0, 4, 6, 5, 4, 7, 3, 5, 4, 4]
-const capacidad = 23
+const capacidad = 40
 const vehicles = 3
 const clients = 9
 
