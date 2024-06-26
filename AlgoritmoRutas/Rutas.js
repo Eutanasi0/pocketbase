@@ -77,14 +77,6 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
     let savings = [];
     //let clientesAtendidos = false;
 
-    for(let i = 1; i <= vehicles; i++){
-        if(i <= clients){
-            rutas.push([0, i, 0]);
-        } else{
-            rutas.push([0, 0]);
-        }
-    }
-
     for(let i = 1; i < clients; i++){
         for(let j = i+1; j <= clients; j++){
             let a = Math.max(i, j);
@@ -98,151 +90,109 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
 
 
     for(let i=0; i < savings.length; i++){
-        if(rutas.length >= vehicles){
-            let ruta_i = encontrarRuta(rutas, savings[i][1]);
-            let ruta_j = encontrarRuta(rutas, savings[i][2]);
+        let ruta_i = encontrarRuta(rutas, savings[i][1]);
+        let ruta_j = encontrarRuta(rutas, savings[i][2]);
             
-            if(ruta_i == null && ruta_j == null){
-                nuevaRuta = [0, savings[i][1], savings[i][2], 0];
-                if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
-                    rutas.push(nuevaRuta); 
-                }   
-            }
+        if(ruta_i == null && ruta_j == null){
+            nuevaRuta = [0, savings[i][1], savings[i][2], 0];
+            if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
+                rutas.push(nuevaRuta); 
+            }   
+        }
 
-            else if(ruta_i != null && ruta_j == null){
-                let condicion1 = comprobarPuntoInterior(rutas, savings[i][1]); 
+        else if(ruta_i != null && ruta_j == null){
+            let condicion1 = comprobarPuntoInterior(ruta_i, savings[i][1]); 
                 
-                if(condicion1 == false){
-                    let condicion2 = comprobarPrimeroLista(rutas, savings[i][1]);
-                    rutas.splice(rutas.indexOf(ruta_i), 1);
-                    if(condicion2 == true && ruta_i.length != 3){
-                        let nuevaRuta = [0, savings[i][2]].concat(ruta_i.slice(1));
-                        if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
-                            rutas.push(nuevaRuta);
-                        } else{
-                            rutas.push(ruta_i);
-                        }
-                        
+            if(condicion1 == false){
+                let condicion2 = comprobarPrimeroLista(rutas, savings[i][1]);
+                rutas.splice(rutas.indexOf(ruta_i), 1);
+                if(condicion2 == true){
+                    let nuevaRuta = [0, savings[i][2]].concat(ruta_i.slice(1));
+                    if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
+                        rutas.push(nuevaRuta);
                     } else{
-                        let nuevaRuta = ruta_i.slice(0,-1).concat([savings[i][2], 0]);
-                        if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
-                            rutas.push(nuevaRuta);
-                        } else{
-                            rutas.push(ruta_i);
-                        
-                        }
+                        rutas.push(ruta_i);
                     }
-                }
-            }
-
-            else if(ruta_i == null && ruta_j != null){
-                let condicion1 = comprobarPuntoInterior(rutas, savings[i][2]);
-
-                if(condicion1 == false){
-                    let condicion2 = comprobarPrimeroLista(rutas, savings[i][2]);
-                    rutas.splice(rutas.indexOf(ruta_j), 1);
-                    if(condicion2 == true && ruta_j.length != 3){
-                        let nuevaRuta  = [0, savings[i][1]].concat(ruta_j.slice(1));
-                        if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
-                            rutas.push(nuevaRuta);
-                        } else{
-                            rutas.push(ruta_j);
-                        }
+                    
+                } else{
+                    let nuevaRuta = ruta_i.slice(0,-1).concat([savings[i][2], 0]);
+                    if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
+                        rutas.push(nuevaRuta);
                     } else{
-                        let nuevaRuta = ruta_j.slice(0,-1).concat([savings[i][1], 0]);
-                        if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
-                            rutas.push(nuevaRuta);
-                        } else{
-                            rutas.push(ruta_j);
-                        }
+                        rutas.push(ruta_i);
                         
                     }
                 }
             }
+        }
 
-            if(ruta_i != null && ruta_j != null && ruta_i != ruta_j){
-                let condicion1 = comprobarPuntoInterior(rutas, savings[i][1]);
-                let condicion2 = comprobarPuntoInterior(rutas, savings[i][2]);
+        else if(ruta_i == null && ruta_j != null){
+            let condicion1 = comprobarPuntoInterior(ruta_j, savings[i][2]);
 
-                if(condicion1 == false && condicion2 == false){
-                    let condicion3 = comprobarPrimeroLista(rutas, savings[i][1]);
-                    let condicion4 = comprobarPrimeroLista(rutas, savings[i][2]);
-
-                    rutas.splice(rutas.indexOf(ruta_i), 1);
-                    rutas.splice(rutas.indexOf(ruta_j), 1);
-
-                    if(condicion3 == true && condicion4 == false && ((ruta_i.length != 3 && ruta_j.length != 3) || (ruta_i.length == 3 && ruta_j.length != 3))){
-                        let nuevaRuta = ruta_j.slice(0,-1).concat(ruta_i.slice(1));
-                        if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
-                            rutas.push(nuevaRuta);
-                            if(rutas.length < vehicles){
-                                rutas.pop();
-                                rutas.push(ruta_i);
-                                rutas.push(ruta_j);
-                            }
-                        } else{
-                            rutas.push(ruta_i);
-                            rutas.push(ruta_j);
-                        }
-                        
-                    } else if (condicion3 == false && condicion4 == true && ((ruta_i.length != 3 && ruta_j.length != 3) || (ruta_i.length != 3 && ruta_j.length == 3))){
-                        let nuevaRuta = ruta_i.slice(0,-1).concat(ruta_j.slice(1));
-                        if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
-                            rutas.push(nuevaRuta);
-                            if(rutas.length < vehicles){
-                                rutas.pop();
-                                rutas.push(ruta_i);
-                                rutas.push(ruta_j);
-                            }
-                        } else{
-                            rutas.push(ruta_i);
-                            rutas.push(ruta_j);
-                        
-                        }
-                    } else if (condicion3 == true && condicion4 == true && ((ruta_i.length == 3 && ruta_j.length == 3) || (ruta_i.length == 3 && ruta_j.length != 3))){
-                        let nuevaRuta = ruta_i.slice(0,-1).concat(ruta_j.slice(1));
-                        if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
-                            rutas.push(nuevaRuta);
-                            if(rutas.length < vehicles){
-                                rutas.pop();
-                                rutas.push(ruta_i);
-                                rutas.push(ruta_j);
-                            }
-                        } else{
-                            rutas.push(ruta_i);
-                            rutas.push(ruta_j);
-                        }
-                    } else if(condicion3 == true && condicion4 == true && ruta_i.length != 3 && ruta_j.length == 3){
-                        let nuevaRuta = ruta_j.slice(0,-1).concat(ruta_i.slice(1));
-                        if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
-                            rutas.push(nuevaRuta);
-                            if(rutas.length < vehicles){
-                                rutas.pop();
-                                rutas.push(ruta_i);
-                                rutas.push(ruta_j);
-                            }
-                        } else{
-                            rutas.push(ruta_i);
-                            rutas.push(ruta_j);
-                        }
+            if(condicion1 == false){
+                let condicion2 = comprobarPrimeroLista(rutas, savings[i][2]);
+                rutas.splice(rutas.indexOf(ruta_j), 1);
+                if(condicion2 == true){
+                    let nuevaRuta  = [0, savings[i][1]].concat(ruta_j.slice(1));
+                    if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
+                        rutas.push(nuevaRuta);
                     } else{
-                        let nuevaRuta = ruta_i.slice(0,-1).concat(ruta_j.slice(1));
-                        if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
-                            rutas.push(nuevaRuta);
-                            if(rutas.length < vehicles){
-                                rutas.pop();
-                                rutas.push(ruta_i);
-                                rutas.push(ruta_j);
-                            }
-                        } else{
-                            rutas.push(ruta_i);
-                            rutas.push(ruta_j);
-                        }
+                        rutas.push(ruta_j);
+                    }
+                } else{
+                    let nuevaRuta = ruta_j.slice(0,-1).concat([savings[i][1], 0]);
+                    if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
+                        rutas.push(nuevaRuta);
+                    } else{
+                        rutas.push(ruta_j);
+                    }
+                        
+                }
+            }
+        }
+
+        if(ruta_i != null && ruta_j != null && ruta_i != ruta_j){
+            let condicion1 = comprobarPuntoInterior(ruta_i, savings[i][1]);
+            let condicion2 = comprobarPuntoInterior(ruta_j, savings[i][2]);
+
+            if(condicion1 == false && condicion2 == false){
+                let condicion3 = comprobarPrimeroLista(rutas, savings[i][1]);
+                let condicion4 = comprobarPrimeroLista(rutas, savings[i][2]);
+
+                rutas.splice(rutas.indexOf(ruta_i), 1);
+                rutas.splice(rutas.indexOf(ruta_j), 1);
+
+                if(condicion3 == true && condicion4 == false){
+                    let nuevaRuta = ruta_j.slice(0,-1).concat(ruta_i.slice(1));
+                    if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
+                        rutas.push(nuevaRuta);
+                    } else{
+                        rutas.push(ruta_i);
+                        rutas.push(ruta_j);
+                    }
+                    
+                } else if (condicion3 == false && condicion4 == true){
+                    let nuevaRuta = ruta_i.slice(0,-1).concat(ruta_j.slice(1));
+                    if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
+                        rutas.push(nuevaRuta);
+                    } else{
+                        rutas.push(ruta_i);
+                        rutas.push(ruta_j);
+                        
+                    }
+                } else{
+                    let nuevaRuta = ruta_i.slice(0,-1).concat(ruta_j.slice(1));
+                    if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
+                        rutas.push(nuevaRuta);
+                    } else{
+                        rutas.push(ruta_i);
+                        rutas.push(ruta_j);
                     }
                 }
             }
         }
     }
+    
     console.log(savings);
     console.log(rutas);
     console.log(distanciaRutas(rutas, distanceMatrix));
