@@ -71,6 +71,11 @@ function calcularCargaRuta(ruta, demandas){
     return cargaT;
 }
 
+function vehiculosSuficientes(rutas, vehicles){
+    return rutas.length <= vehicles;
+}
+
+
 function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
     let rutas = [];
     let savings = [];
@@ -89,7 +94,6 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
 
 
     for(let i=0; i < savings.length; i++){
-        console.log(rutas)
         let ruta_i = encontrarRuta(rutas, savings[i][1]);
         let ruta_j = encontrarRuta(rutas, savings[i][2]);
             
@@ -212,6 +216,11 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
     console.log(savings);
     console.log(rutas);
     console.log(distanciaRutas(rutas, distanceMatrix));
+    if(vehiculosSuficientes(rutas, vehicles)){
+        console.log("La empresa tiene suficientes vehículos");
+    } else{
+        console.log("La empresa no tiene suficientes vehículos");
+    }
 }
 
 const matriz = [
@@ -228,7 +237,7 @@ const matriz = [
 ]
 
 const demandas = [0, 4, 6, 5, 4, 7, 3, 5, 4, 4]
-const capacidad = 40
+const capacidad = 20
 const vehicles = 3
 const clients = 9
 
