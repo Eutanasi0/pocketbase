@@ -16,10 +16,7 @@ routerAdd('POST', '/generate', async (c) => {
     client.formatted_address.replaceAll(' ', '+')
   ).join('|') 
 
-  const url = `https://maps.googleapis.com/maps/api/distancematrix/json?
-    &origins=${addresses}
-    &destinations=${addresses}
-    &key=${api_key}`
+  const url = `https://maps.googleapis.com/maps/api/distancematrix/json?&origins=${addresses}&destinations=${addresses}&key=${api_key}`
 
   // const res = await fetch(url)
   debug(url)
