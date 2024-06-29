@@ -49,9 +49,11 @@ routerAdd('POST', '/generate', (c) => {
     vehicles[0].get('capacity')
   )
 
-  $app.logger().debug('result', 
-    'raw_routes', raw_routes,
-  )
+  for (const [route_i, raw_route] of raw_routes.entries()) {
+    $app.logger().debug(`route ${route_i}`, 
+      'data', raw_route,
+    )
+  }
 
   // const title = body.title
   // const description = body.description
