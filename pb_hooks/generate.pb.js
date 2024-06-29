@@ -1,4 +1,4 @@
-routerAdd('POST', '/generate', async (c) => {
+routerAdd('POST', '/generate', (c) => {
   const debug = (msg) => $app.logger().debug(JSON.stringify(msg))
   // const generator = require(`${__hooks}/services/generator.js`)
   const api_key = require(`${__hooks}/apikey.js`)
@@ -18,8 +18,7 @@ routerAdd('POST', '/generate', async (c) => {
 
   const url = `https://maps.googleapis.com/maps/api/distancematrix/json?&origins=${addresses}&destinations=${addresses}&key=${api_key}`
 
-  // const res = await fetch(url)
-  debug("res: ")
+  fetch(url).then(res => debug("res: " + res))
 
   // const title = body.title
   // const description = body.description
