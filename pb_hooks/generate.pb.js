@@ -1,5 +1,4 @@
 routerAdd('POST', '/generate', (c) => {
-  const debug = (msg) => $app.logger().debug(JSON.stringify(msg))
   const generator = require(`${__hooks}/services/generator.js`)
   const api_key = require(`${__hooks}/apikey.js`)
 
@@ -41,18 +40,10 @@ routerAdd('POST', '/generate', (c) => {
       e.distance.value 
     )
   )
-
-  // const raw_routes = generator(
-  //   distance_matrix,
-  //   vehicles.length,
-  //   clients.length,
-  //   demands,
-  //   vehicles[0].get('capacity')
-  // )
-
+  
   $app.logger().debug('arguments',
     'matrix', distance_matrix,
-    'vehicles', vehicles.length,
+    'vehicles', vehicles[0].get('instances'),
     'clients', clients.length,
     'demands', demands,
     'capacity', vehicles[0].get('capacity')
@@ -60,11 +51,23 @@ routerAdd('POST', '/generate', (c) => {
 
   $app.logger().debug('types',
     'matrix', distance_matrix.map(row => row.map(e => typeof e)),
-    'vehicles', typeof vehicles.length,
+    'vehicles', typeof vehicles[0].get('instances'),
     'clients', typeof clients.length,
     'demands', demands.map(demand => typeof demand),
     'capacity', typeof vehicles[0].get('capacity')
   )
+
+  // const raw_routes = generator(
+  //   distance_matrix,
+  //   vehicles[0].get('instances'),
+  //   clients.length,
+  //   demands,
+  //   vehicles[0].get('capacity')
+  // )
+
+  // $app.logger().debug('result', 
+  //   'raw_routes', raw_routes,
+  // )
 
   // const title = body.title
   // const description = body.description
