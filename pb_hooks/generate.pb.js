@@ -19,23 +19,21 @@ routerAdd('POST', '/generate', (c) => {
     ...body.clients.map(client => client.formatted_address)
   ]
 
-  debug(waypoints)
+  const URLwaypoints = waypoints.map(waypoint => 
+    waypoint.replaceAll(' ', '+')
+  ).join('|') 
 
-  // const URLwaypoints = waypoints.map(waypoint => 
-  //   waypoint.replaceAll(' ', '+')
-  // ).join('|') 
+  const matrixUrl = `https://maps.googleapis.com/maps/api/distancematrix/json?&origins=${URLwaypoints}&destinations=${URLwaypoints}&key=${api_key}`
 
-  // const matrixUrl = `https://maps.googleapis.com/maps/api/distancematrix/json?&origins=${URLwaypoints}&destinations=${URLwaypoints}&key=${api_key}`
+  const res = $http.send({ url: matrixUrl, method: 'get' })
 
-  // const res = $http.send({ url: matrixUrl, method: 'get' })
+  const distanceMatrix = res.json.rows.map(row => 
+    row.elements.map(e =>
+      e.distance.value 
+    )
+  )
 
-  // const distanceMatrix = res.json.rows.map(row => 
-  //   row.elements.map(e =>
-  //     e.distance.value 
-  //   )
-  // )
-
-  // debug(distanceMatrix)
+  debug(distanceMatrix)
 
   // const title = body.title
   // const description = body.description
