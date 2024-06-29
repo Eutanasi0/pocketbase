@@ -19,7 +19,7 @@ routerAdd('POST', '/generate', (c) => {
   //   &destinations=${addresses}
   //   &key=${API_KEY}`
 
-  debug(process.env.APIKEY)
+  debug(process.env.HOlA)
 
   // const title = body.title
   // const description = body.description
