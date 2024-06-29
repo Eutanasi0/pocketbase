@@ -41,6 +41,8 @@ routerAdd('POST', '/generate', (c) => {
     )
   )
 
+  $app.logger().debug('distance matrix', data, distance_matrix)
+
   const raw_plan = generator(
     distance_matrix,
     vehicles[0].get('instances'),
