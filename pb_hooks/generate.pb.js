@@ -13,15 +13,19 @@ routerAdd('POST', '/generate', (c) => {
   )
 
   const depot = $app.dao().findRecordById('depots', depot_id)
-  debug(depot)
 
-  // const waypoints = body.clients
+  const waypoints = [
+    depot.get('formatted_address'), 
+    ...body.clients.map(client => client.formatted_address)
+  ]
 
-  // const addresses = waypoints.map(client => 
-  //   client.formatted_address.replaceAll(' ', '+')
+  debug(waypoints)
+
+  // const URLwaypoints = waypoints.map(waypoint => 
+  //   waypoint.replaceAll(' ', '+')
   // ).join('|') 
 
-  // const matrixUrl = `https://maps.googleapis.com/maps/api/distancematrix/json?&origins=${addresses}&destinations=${addresses}&key=${api_key}`
+  // const matrixUrl = `https://maps.googleapis.com/maps/api/distancematrix/json?&origins=${URLwaypoints}&destinations=${URLwaypoints}&key=${api_key}`
 
   // const res = $http.send({ url: matrixUrl, method: 'get' })
 
