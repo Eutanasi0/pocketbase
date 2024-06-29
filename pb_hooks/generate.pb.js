@@ -53,20 +53,20 @@ routerAdd('POST', '/generate', (c) => {
     $app.logger().debug(`waypoint 0 of route ${route_index}`,  
       'from (depot)', depot.get('formatted_address'),
       'to', clients[raw_route[1] - 1].formatted_address,
+      'distance', distance_matrix[0][raw_route[1]],
     )
     for (let w_index = 1; w_index < raw_route.length - 2; w_index++) {
       $app.logger().debug(`waypoint ${w_index} of route ${route_index}`,  
         'from', clients[raw_route[w_index] - 1].formatted_address, 
         'to', clients[raw_route[w_index + 1] - 1].formatted_address,
+        'distance', distance_matrix[raw_route[w_index]][raw_route[w_index + 1]],
       )
     }
     $app.logger().debug(`waypoint ${raw_route.length - 2} of route ${route_index}`,   
       'from', clients[raw_route[raw_route.length - 2] - 1].formatted_address,  
-      'to (depot)', depot.get('formatted_address')
+      'to (depot)', depot.get('formatted_address'),
+      'distance', distance_matrix[raw_route[raw_route.length - 2]][0],
     )
-    // $app.logger().debug(`route ${route_index}`, 
-    //   'data', raw_route,
-    // )
   }
 
   // const title = body.title
