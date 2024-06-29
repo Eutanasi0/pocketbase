@@ -59,10 +59,10 @@ routerAdd('POST', '/generate', (c) => {
   )
 
   $app.logger().debug('types',
-    'matrix', typeof distance_matrix,
+    'matrix', distance_matrix.map(row => row.map(e => typeof e)),
     'vehicles', typeof vehicles.length,
     'clients', typeof clients.length,
-    'demands', typeof demands,
+    'demands', demands.map(demand => typeof demand),
     'capacity', typeof vehicles[0].get('capacity')
   )
 
