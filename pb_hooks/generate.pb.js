@@ -12,9 +12,14 @@ routerAdd('POST', '/generate', (c) => {
 
   const addresses = body.clients.map(client => 
     client.formatted_address.replaceAll(' ', '+')
-  ).join('|')
+  ).join('|') 
 
-  debug(addresses)
+  // const url = `https://maps.googleapis.com/maps/api/distancematrix/json?
+  //   &origins=${addresses}
+  //   &destinations=${addresses}
+  //   &key=${API_KEY}`
+
+  debug(process.env.TZ)
 
   // const title = body.title
   // const description = body.description
