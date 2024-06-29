@@ -14,7 +14,11 @@ routerAdd('POST', '/generate', (c) => {
 
   const clients = body.clients
 
-  debug(clients)
+  const demands = body.clients.map(client => (
+    client.products.reduce((total, curr) => (curr.amount_requested * curr.unit_weight) + total, 0)
+  ))
+
+  debug(demands)
 
   // const depot = $app.dao().findRecordById('depots', depot_id)
 
