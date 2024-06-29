@@ -52,16 +52,16 @@ routerAdd('POST', '/generate', (c) => {
   for (const [route_index, raw_route] of raw_plan.entries()) {
     $app.logger().debug(`waypoint 0 of route ${route_index}`,  
       'from (depot)', depot,
-      'to', clients[raw_route[1]],
+      'to', clients[raw_route[1] - 1],
     )
     for (let w_index = 1; w_index < raw_route.length - 2; w_index++) {
       $app.logger().debug(`waypoint ${w_index} of route ${route_index}`,  
-        'from', clients[raw_route[w_index]], 
-        'to', clients[raw_route[w_index + 1]],
+        'from', clients[raw_route[w_index] - 1], 
+        'to', clients[raw_route[w_index + 1] - 1],
       )
     }
-    $app.logger().debug(`waypoint ${raw_route.length - 1} of route ${route_index}`,  
-      'from', clients[raw_route[raw_route.length - 2]],  
+    $app.logger().debug(`waypoint ${raw_route.length - 2} of route ${route_index}`,   
+      'from', clients[raw_route[raw_route.length - 2] - 1],  
       'to (depot)', depot,
     )
     // $app.logger().debug(`route ${route_index}`, 
