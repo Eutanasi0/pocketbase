@@ -1,5 +1,6 @@
 routerAdd("POST", "/generate", (c) => {
   const data = $apis.requestInfo(c).data
-  console.log(JSON.stringify(data))
+  const dataStr = JSON.stringify(data)
+  $app.logger().debug(dataStr)
   return c.json(200)
 });
