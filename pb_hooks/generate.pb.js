@@ -54,7 +54,7 @@ routerAdd('POST', '/generate', (c) => {
     'matrix', distance_matrix,
     'vehicles', vehicles.length,
     'clients', clients.length,
-    'demands', JSON.stringify(demands),
+    'demands', demands,
     'capacity', vehicles[0].get('capacity')
   )
 
