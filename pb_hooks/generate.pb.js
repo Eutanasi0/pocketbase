@@ -35,6 +35,8 @@ routerAdd('POST', '/generate', (c) => {
 
   const res = $http.send({ url: matrix_url, method: 'get' })
 
+  $app.logger().debug('distance/time matrix', 'url', matrix_url)
+
   const distance_matrix = res.json.rows.map(row => 
     row.elements.map(e =>
       e.distance.value 
