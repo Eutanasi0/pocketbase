@@ -51,18 +51,18 @@ routerAdd('POST', '/generate', (c) => {
 
   for (const [route_index, raw_route] of raw_plan.entries()) {
     $app.logger().debug(`waypoint 0 of route ${route_index}`,  
-      'from (depot)', depot,
-      'to', clients[raw_route[1] - 1],
+      'from (depot)', depot.formatted_address,
+      'to', clients[raw_route[1] - 1].formatted_address,
     )
     for (let w_index = 1; w_index < raw_route.length - 2; w_index++) {
       $app.logger().debug(`waypoint ${w_index} of route ${route_index}`,  
-        'from', clients[raw_route[w_index] - 1], 
-        'to', clients[raw_route[w_index + 1] - 1],
+        'from', clients[raw_route[w_index] - 1].formatted_address, 
+        'to', clients[raw_route[w_index + 1] - 1].formatted_address,
       )
     }
     $app.logger().debug(`waypoint ${raw_route.length - 2} of route ${route_index}`,   
-      'from', clients[raw_route[raw_route.length - 2] - 1],  
-      'to (depot)', depot,
+      'from', clients[raw_route[raw_route.length - 2] - 1].formatted_address,  
+      'to (depot)', depot.formatted_address
     )
     // $app.logger().debug(`route ${route_index}`, 
     //   'data', raw_route,
