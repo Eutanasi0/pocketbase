@@ -4,43 +4,51 @@ routerAdd('POST', '/generate', (c) => {
   const api_key = require(`${__hooks}/apikey.js`)
 
   const body = $apis.requestInfo(c).data
-  const authUser = c.get('authRecord')
-  const depot_id = authUser.get('depot')
+  const auth_user = c.get('authRecord')
+  const depot_id = auth_user.get('depot')
 
   const vehicles = $app.dao().findRecordsByFilter(
     'vehicles',
     `depot = '${depot_id}'`
   )
 
-  const depot = $app.dao().findRecordById('depots', depot_id)
+  const clients = body.clients
 
-  const waypoints = [
-    depot.get('formatted_address'), 
-    ...body.clients.map(client => client.formatted_address)
-  ]
+  debug(clients)
 
-  const URLwaypoints = waypoints.map(waypoint => 
-    waypoint.replaceAll(' ', '+')
-  ).join('|') 
+  // const depot = $app.dao().findRecordById('depots', depot_id)
 
-  const matrixUrl = `https://maps.googleapis.com/maps/api/distancematrix/json?&origins=${URLwaypoints}&destinations=${URLwaypoints}&key=${api_key}`
+  // const waypoints = [
+  //   depot.get('formatted_address'), 
+  //   ...clients.map(client => client.formatted_address)
+  // ]
 
-  debug(matrixUrl)
+  // const url_waypoints = waypoints.map(waypoint => 
+  //   waypoint.replaceAll(' ', '+')
+  // ).join('|') 
 
-  const res = $http.send({ url: matrixUrl, method: 'get' })
+  // const matrix_url = `https://maps.googleapis.com/maps/api/distancematrix/json?&origins=${url_waypoints}&destinations=${url_waypoints}&key=${api_key}`
 
-  const distanceMatrix = res.json.rows.map(row => 
-    row.elements.map(e =>
-      e.distance.value 
-    )
-  )
+  // debug(matrix_url)
 
-  debug(distanceMatrix)
+  // const res = $http.send({ url: matrix_url, method: 'get' })
+
+  // const distance_matrix = res.json.rows.map(row => 
+  //   row.elements.map(e =>
+  //     e.distance.value 
+  //   )
+  // )
+
+  // const raw_routes = generator(
+  //   distance_matrix,
+  //   vehicles.length,
+  //   clients.length,
+  // )
 
   // const title = body.title
   // const description = body.description
   // const start = body.start
-  // const user = authUser.get('id')
+  // const user = auth_user.get('id')
   // const total_clients = body.clients.length
 
   return c.json(200)
