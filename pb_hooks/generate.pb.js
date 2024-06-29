@@ -1,4 +1,5 @@
 routerAdd("POST", "/generate", (c) => {
-  console.log("hola")
-  return c.json(200, { "message": "holaaa" })
+  const data = $apis.requestInfo(c).data
+  console.log(data)
+  return c.json(200)
 });
