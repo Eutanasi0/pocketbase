@@ -5,28 +5,33 @@ routerAdd('POST', '/generate', (c) => {
 
   const body = $apis.requestInfo(c).data
   const authUser = c.get('authRecord')
-  const depot = authUser.get('depot')
+  const depot_id = authUser.get('depot')
 
   const vehicles = $app.dao().findRecordsByFilter(
     'vehicles',
-    `depot = '${depot}'`
+    `depot = '${depot_id}'`
   )
 
-  const addresses = body.clients.map(client => 
-    client.formatted_address.replaceAll(' ', '+')
-  ).join('|') 
+  const depot = $app.dao().findRecordById('depots', depot_id)
+  debug(depot)
 
-  const matrixUrl = `https://maps.googleapis.com/maps/api/distancematrix/json?&origins=${addresses}&destinations=${addresses}&key=${api_key}`
+  // const waypoints = body.clients
 
-  const res = $http.send({ url: matrixUrl, method: 'get' })
+  // const addresses = waypoints.map(client => 
+  //   client.formatted_address.replaceAll(' ', '+')
+  // ).join('|') 
 
-  const distanceMatrix = res.json.rows.map(row => 
-    row.elements.map(e =>
-      e.distance.value 
-    )
-  )
+  // const matrixUrl = `https://maps.googleapis.com/maps/api/distancematrix/json?&origins=${addresses}&destinations=${addresses}&key=${api_key}`
 
-  debug(distanceMatrix)
+  // const res = $http.send({ url: matrixUrl, method: 'get' })
+
+  // const distanceMatrix = res.json.rows.map(row => 
+  //   row.elements.map(e =>
+  //     e.distance.value 
+  //   )
+  // )
+
+  // debug(distanceMatrix)
 
   // const title = body.title
   // const description = body.description
