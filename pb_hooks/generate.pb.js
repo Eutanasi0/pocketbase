@@ -1,5 +1,5 @@
 routerAdd('POST', '/generate', (c) => {
-  const generator = require(`${__hooks}/services/generatr.js`)
+  const generator = require(`${__hooks}/services/generator.js`)
   const api_key = require(`${__hooks}/apikey.js`)
 
   const body = $apis.requestInfo(c).data
