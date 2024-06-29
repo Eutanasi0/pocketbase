@@ -57,17 +57,17 @@ routerAdd('POST', '/generate', (c) => {
     'capacity', typeof vehicles[0].get('capacity')
   )
 
-  // const raw_routes = generator(
-  //   distance_matrix,
-  //   vehicles[0].get('instances'),
-  //   clients.length,
-  //   demands,
-  //   vehicles[0].get('capacity')
-  // )
+  const raw_routes = generator(
+    distance_matrix,
+    vehicles[0].get('instances'),
+    clients.length,
+    demands,
+    vehicles[0].get('capacity')
+  )
 
-  // $app.logger().debug('result', 
-  //   'raw_routes', raw_routes,
-  // )
+  $app.logger().debug('result', 
+    'raw_routes', raw_routes,
+  )
 
   // const title = body.title
   // const description = body.description
