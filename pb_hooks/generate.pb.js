@@ -9,7 +9,7 @@ routerAdd("POST", "/generate", (c) => {
   //   `depot = "${authUser.depot}`
   // )
 
-  $app.logger().debug(authUser.depot)
+  $app.logger().debug(JSON.stringify(authUser))
 
   return c.json(200)
 });
