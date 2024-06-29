@@ -12,7 +12,7 @@ routerAdd('POST', '/generate', (c) => {
     `depot = '${depot_id}'`
   )
 
-  debug(vehicles)
+  debug(vehicles[0].get('capacity'))
 
   // const clients = body.clients
 
