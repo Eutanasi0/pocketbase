@@ -58,6 +58,14 @@ routerAdd('POST', '/generate', (c) => {
     'capacity', vehicles[0].get('capacity')
   )
 
+  $app.logger().debug('types',
+    'matrix', typeof distance_matrix,
+    'vehicles', typeof vehicles.length,
+    'clients', typeof clients.length,
+    'demands', typeof demands,
+    'capacity', typeof vehicles[0].get('capacity')
+  )
+
   // const title = body.title
   // const description = body.description
   // const start = body.start
