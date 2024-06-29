@@ -1,6 +1,8 @@
 routerAdd("POST", "/generate", (c) => {
   const data = $apis.requestInfo(c).data
-  const dataStr = JSON.stringify(data)
-  $app.logger().debug(dataStr)
+  
+  const authRecord = c.get('authRecord')
+
+  $app.logger().debug(JSON.stringify(authRecord))
   return c.json(200)
 });
