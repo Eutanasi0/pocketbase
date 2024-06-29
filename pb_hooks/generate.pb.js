@@ -12,43 +12,44 @@ routerAdd('POST', '/generate', (c) => {
     `depot = '${depot_id}'`
   )
 
-  debug(vehicles[0].get('capacity'))
+  const clients = body.clients
 
-  // const clients = body.clients
+  const demands = body.clients.map(client => (
+    client.products.reduce((total, curr) => (curr.amount_requested * curr.unit_weight) + total, 0)
+  ))
 
-  // const demands = body.clients.map(client => (
-  //   client.products.reduce((total, curr) => (curr.amount_requested * curr.unit_weight) + total, 0)
-  // ))
+  const depot = $app.dao().findRecordById('depots', depot_id)
 
-  // const depot = $app.dao().findRecordById('depots', depot_id)
+  const waypoints = [
+    depot.get('formatted_address'), 
+    ...clients.map(client => client.formatted_address)
+  ]
 
-  // const waypoints = [
-  //   depot.get('formatted_address'), 
-  //   ...clients.map(client => client.formatted_address)
-  // ]
+  const url_waypoints = waypoints.map(waypoint => 
+    waypoint.replaceAll(' ', '+')
+  ).join('|') 
 
-  // const url_waypoints = waypoints.map(waypoint => 
-  //   waypoint.replaceAll(' ', '+')
-  // ).join('|') 
+  const matrix_url = `https://maps.googleapis.com/maps/api/distancematrix/json?&origins=${url_waypoints}&destinations=${url_waypoints}&key=${api_key}`
 
-  // const matrix_url = `https://maps.googleapis.com/maps/api/distancematrix/json?&origins=${url_waypoints}&destinations=${url_waypoints}&key=${api_key}`
+  debug(matrix_url)
 
-  // debug(matrix_url)
+  const res = $http.send({ url: matrix_url, method: 'get' })
 
-  // const res = $http.send({ url: matrix_url, method: 'get' })
+  const distance_matrix = res.json.rows.map(row => 
+    row.elements.map(e =>
+      e.distance.value 
+    )
+  )
 
-  // const distance_matrix = res.json.rows.map(row => 
-  //   row.elements.map(e =>
-  //     e.distance.value 
-  //   )
-  // )
+  const raw_routes = generator(
+    distance_matrix,
+    vehicles.length,
+    clients.length,
+    demands,
+    vehicles[0].get('capacity')
+  )
 
-  // const raw_routes = generator(
-  //   distance_matrix,
-  //   vehicles.length,
-  //   clients.length,
-  //   demands,
-  // )
+  debug(raw_routes)
 
   // const title = body.title
   // const description = body.description
