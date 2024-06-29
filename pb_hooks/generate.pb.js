@@ -1,5 +1,5 @@
 routerAdd('POST', '/generate', (c) => {
-  const debug = (msg) => $app.logger().debug(JSON.stringify(msg))
+  const debug = (msg) => $app.logger().debug(msg)
   const generator = require(`${__hooks}/services/generator.js`)
   const api_key = require(`${__hooks}/apikey.js`)
 
@@ -31,8 +31,6 @@ routerAdd('POST', '/generate', (c) => {
 
   const matrix_url = `https://maps.googleapis.com/maps/api/distancematrix/json?&origins=${url_waypoints}&destinations=${url_waypoints}&key=${api_key}`
 
-  debug(matrix_url)
-
   const res = $http.send({ url: matrix_url, method: 'get' })
 
   const distance_matrix = res.json.rows.map(row => 
@@ -49,7 +47,13 @@ routerAdd('POST', '/generate', (c) => {
     vehicles[0].get('capacity')
   )
 
-  debug(raw_routes)
+  debug('arguments',
+    'matrix', JSON.stringify(distance_matrix),
+    'vehicles', vehicles.length,
+    'clients', clients.length,
+    'demands', JSON.stringify(demands),
+    'capacity', vehicles[0].get('capacity')
+  )
 
   // const title = body.title
   // const description = body.description
