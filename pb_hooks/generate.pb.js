@@ -1,8 +1,15 @@
-routerAdd("POST", "/generate", (c) => {
-  const data = $apis.requestInfo(c).data
-  
-  const authRecord = c.get('authRecord')
+const debug = (input) => $app.logger().debug(JSON.stringify(input))
 
-  $app.logger().debug(JSON.stringify(authRecord))
+routerAdd("POST", "/generate", (c) => {
+  const planInput = $apis.requestInfo(c).data
+  const authUser = c.get('authRecord')
+
+  const vehicles = $app.dao().findRecordsByFilter(
+    "vehicles",
+    `depot = "${authUser.depot}`
+  )
+
+  debug(vehicles)
+
   return c.json(200)
 });
