@@ -25,6 +25,8 @@ routerAdd('POST', '/generate', (c) => {
 
   const matrixUrl = `https://maps.googleapis.com/maps/api/distancematrix/json?&origins=${URLwaypoints}&destinations=${URLwaypoints}&key=${api_key}`
 
+  debug(matrixUrl)
+
   const res = $http.send({ url: matrixUrl, method: 'get' })
 
   const distanceMatrix = res.json.rows.map(row => 
