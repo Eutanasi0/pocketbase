@@ -225,6 +225,7 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
   // console.log(savings);
   // console.log(rutas);
   // console.log(distanciaRutas(rutas, distanceMatrix));
+  return rutas
 }
 
 module.exports = generarRutas
