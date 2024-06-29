@@ -40,22 +40,6 @@ routerAdd('POST', '/generate', (c) => {
       e.distance.value 
     )
   )
-  
-  $app.logger().debug('arguments',
-    'matrix', distance_matrix,
-    'vehicles', vehicles[0].get('instances'),
-    'clients', clients.length,
-    'demands', demands,
-    'capacity', vehicles[0].get('capacity')
-  )
-
-  $app.logger().debug('types',
-    'matrix', distance_matrix.map(row => row.map(e => typeof e)),
-    'vehicles', typeof vehicles[0].get('instances'),
-    'clients', typeof clients.length,
-    'demands', demands.map(demand => typeof demand),
-    'capacity', typeof vehicles[0].get('capacity')
-  )
 
   const raw_routes = generator(
     distance_matrix,
