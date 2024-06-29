@@ -132,17 +132,19 @@ routerAdd('POST', '/generate', (c) => {
     total_duration += route_duration
   }
 
-  $app.logger().debug('result', 
-    'routes', routes,
-    'total_distance', total_distance,
-    'total_duration', total_duration
-  )
+  const plan = {
+    title: body.title,
+    description: body.description,
+    start: body.start,
+    user: auth_user.get('id'),
+    depot: depot,
+    total_clients: clients.length,
+    total_distance,
+    total_duration,
+    routes,
+  }
 
-  // const title = body.title
-  // const description = body.description
-  // const start = body.start
-  // const user = auth_user.get('id')
-  // const total_clients = body.clients.length
+  $app.logger().debug('plan', 'data', plan)
 
   return c.json(200)
 });
