@@ -12,7 +12,7 @@ routerAdd('POST', '/generate', (c) => {
 
   const addresses = body.clients.map(client => 
     client.formatted_address.replace(' ', '+')
-  ).concat('|')
+  ).join('|')
 
   debug(addresses)
 
