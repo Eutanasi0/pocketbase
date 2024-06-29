@@ -12,13 +12,13 @@ routerAdd('POST', '/generate', (c) => {
     `depot = '${depot_id}'`
   )
 
-  const clients = body.clients
+  debug(vehicles)
 
-  const demands = body.clients.map(client => (
-    client.products.reduce((total, curr) => (curr.amount_requested * curr.unit_weight) + total, 0)
-  ))
+  // const clients = body.clients
 
-  debug(demands)
+  // const demands = body.clients.map(client => (
+  //   client.products.reduce((total, curr) => (curr.amount_requested * curr.unit_weight) + total, 0)
+  // ))
 
   // const depot = $app.dao().findRecordById('depots', depot_id)
 
@@ -47,6 +47,7 @@ routerAdd('POST', '/generate', (c) => {
   //   distance_matrix,
   //   vehicles.length,
   //   clients.length,
+  //   demands,
   // )
 
   // const title = body.title
