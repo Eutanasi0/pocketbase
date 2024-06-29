@@ -26,7 +26,7 @@ routerAdd('POST', '/generate', (c) => {
   //   )
   // )
 
-  debug(res)
+  debug(res.json)
 
   // const title = body.title
   // const description = body.description
