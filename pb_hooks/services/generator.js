@@ -51,7 +51,7 @@ function calcularCargaRuta(ruta, demandas){
   return cargaT;
 }
 
-export default function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
+function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
   let rutas = [];
   let savings = [];
   //let clientesAtendidos = false;
@@ -226,3 +226,5 @@ export default function generarRutas(distanceMatrix, vehicles, clients, demandas
   // console.log(rutas);
   // console.log(distanciaRutas(rutas, distanceMatrix));
 }
+
+module.exports = generarRutas
