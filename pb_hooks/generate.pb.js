@@ -1,16 +1,26 @@
-routerAdd("POST", "/generate", (c) => {
+routerAdd('POST', '/generate', (c) => {
   const debug = (msg) => $app.logger().debug(JSON.stringify(msg))
 
-  const planInput = $apis.requestInfo(c).data
+  const body = $apis.requestInfo(c).data
   const authUser = c.get('authRecord')
-  const depotId = authUser.get('depot')
+  const depot = authUser.get('depot')
 
   const vehicles = $app.dao().findRecordsByFilter(
-    "vehicles",
-    `depot = "${depotId}"`
+    'vehicles',
+    `depot = '${depot}'`
   )
 
-  debug(vehicles)
+  const addresses = body.clients.map(client => 
+    client.formatted_address.replace(' ', '+')
+  ).concat('|')
+
+  debug(addresses)
+
+  // const title = body.title
+  // const description = body.description
+  // const start = body.start
+  // const user = authUser.get('id')
+  // const total_clients = body.clients.length
 
   return c.json(200)
 });
