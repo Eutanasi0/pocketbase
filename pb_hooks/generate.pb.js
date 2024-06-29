@@ -1,4 +1,6 @@
 routerAdd("POST", "/generate", (c) => {
+  const debug = (msg) => $app.logger().debug(JSON.stringify(msg))
+
   const planInput = $apis.requestInfo(c).data
   const authUser = c.get('authRecord')
   const depotId = authUser.get('depot')
@@ -8,7 +10,7 @@ routerAdd("POST", "/generate", (c) => {
     `depot = "${depotId}"`
   )
 
-  $app.logger().debug(JSON.stringify(vehicles))
+  debug(vehicles)
 
   return c.json(200)
 });
