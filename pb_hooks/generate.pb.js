@@ -1,5 +1,5 @@
 routerAdd('POST', '/generate', (c) => {
-  const debug = (msg) => $app.logger().debug(msg)
+  const debug = (msg) => $app.logger().debug(JSON.stringify(msg))
   const generator = require(`${__hooks}/services/generator.js`)
   const api_key = require(`${__hooks}/apikey.js`)
 
@@ -39,15 +39,15 @@ routerAdd('POST', '/generate', (c) => {
     )
   )
 
-  const raw_routes = generator(
-    distance_matrix,
-    vehicles.length,
-    clients.length,
-    demands,
-    vehicles[0].get('capacity')
-  )
+  // const raw_routes = generator(
+  //   distance_matrix,
+  //   vehicles.length,
+  //   clients.length,
+  //   demands,
+  //   vehicles[0].get('capacity')
+  // )
 
-  debug('arguments',
+  $app.logger().debug('arguments',
     'matrix', JSON.stringify(distance_matrix),
     'vehicles', vehicles.length,
     'clients', clients.length,
