@@ -41,7 +41,7 @@ routerAdd('POST', '/generate', (c) => {
     )
   )
 
-  const raw_routes = generator(
+  const raw_plan = generator(
     distance_matrix,
     vehicles[0].get('instances'),
     clients.length,
@@ -49,10 +49,15 @@ routerAdd('POST', '/generate', (c) => {
     vehicles[0].get('capacity')
   )
 
-  for (const [route_i, raw_route] of raw_routes.entries()) {
-    $app.logger().debug(`route ${route_i}`, 
-      'data', raw_route,
-    )
+  for (const [route_index, raw_route] of raw_plan.entries()) {
+    for (let w_index = 0; w_index < raw_route.length - 1; w_index++) {
+      $app.logger().debug(`waypoint ${w_index} of route ${route_index}`,  
+        'pair', [waypoints[raw_route[w_index]], waypoints[raw_route[w_index + 1]]],
+      )
+    }
+    // $app.logger().debug(`route ${route_index}`, 
+    //   'data', raw_route,
+    // )
   }
 
   // const title = body.title
