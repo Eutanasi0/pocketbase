@@ -20,13 +20,13 @@ routerAdd('POST', '/generate', (c) => {
 
   const res = $http.send({ url: matrixUrl, method: 'get' })
 
-  // const distanceMatrix = res.rows.map(row => 
-  //   row.elements.map(e =>
-  //     e.distance.value 
-  //   )
-  // )
+  const distanceMatrix = res.json.rows.map(row => 
+    row.elements.map(e =>
+      e.distance.value 
+    )
+  )
 
-  debug(res.json.rows)
+  debug(distanceMatrix)
 
   // const title = body.title
   // const description = body.description
