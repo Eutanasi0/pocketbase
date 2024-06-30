@@ -71,37 +71,45 @@ function calcularCargaRuta(ruta, demandas){
     return cargaT;
 }
 
-function vehiculosSuficientes(rutas, vehicles){
-    return rutas.length <= vehicles;
-}
+function siguienteCapacidad(ruta, demandas, clients, capacidad){
+    let cargaTemp = calcularCargaRuta(ruta, demandas);
+    let menor = demandas[1];
 
+    for(let k = 1; k <= clients; k++){
 
-function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
-    let rutas = [];
-    let savings = [];
-    //let clientesAtendidos = false;
-
-    for(let i = 1; i < clients; i++){
-        for(let j = i+1; j <= clients; j++){
-            let a = Math.max(i, j);
-            let b = Math.min(i, j);
-            let saving = distanceMatrix[0][i] + distanceMatrix[0][j] - distanceMatrix[i][j];
-            savings.push([saving, a, b]);
+        if(ruta.includes(k) == false){
+            if(demandas[k] <= menor){
+                menor = demandas[k];
+            }
         }
     }
 
-    savings.sort((a, b) => b[0] - a[0]);
+    if(cargaTemp + menor > capacidad){
+        return true;
+    }
 
+    return false;
+}
+
+function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
+    let rutas = [];
+    let copiaRutas = [];
+    let savings = [];
+    let indGblCpc = 0
+    let rutasCreadas = 0
 
     for(let i=0; i < savings.length; i++){
         let ruta_i = encontrarRuta(rutas, savings[i][1]);
         let ruta_j = encontrarRuta(rutas, savings[i][2]);
-            
+
         if(ruta_i == null && ruta_j == null){
             nuevaRuta = [0, savings[i][1], savings[i][2], 0];
-            if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
+            if(calcularCargaRuta(nuevaRuta, demandas) <= capacidades[indGblCpc + rutasCreadas]){
                 rutas.push(nuevaRuta); 
-            }   
+                if(rutasCreadas + indGblCpc < capacidades.length - 1){
+                    rutasCreadas++;
+                }
+            } 
         }
 
         else if(ruta_i != null && ruta_j == null){
@@ -114,7 +122,7 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
                 rutas.splice(rutas.indexOf(ruta_i), 1);
                 if(condicion2 == true){
                     let nuevaRuta = [0, savings[i][2]].concat(ruta_i.slice(1));
-                    if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
+                    if(calcularCargaRuta(nuevaRuta, demandas) <= capacidades[indGblCpc]){
                         rutas.push(nuevaRuta);
                     } else if(totalElementos == (clients + 2*longitudRutas) - 1){
                         rutas.push(ruta_i);
@@ -125,7 +133,7 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
                     
                 } else{
                     let nuevaRuta = ruta_i.slice(0,-1).concat([savings[i][2], 0]);
-                    if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
+                    if(calcularCargaRuta(nuevaRuta, demandas) <= capacidades[indGblCpc]){
                         rutas.push(nuevaRuta);
                     } else if(totalElementos == (clients + 2*longitudRutas) - 1){
                         rutas.push(ruta_i);
@@ -148,7 +156,7 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
                 rutas.splice(rutas.indexOf(ruta_j), 1);
                 if(condicion2 == true){
                     let nuevaRuta  = [0, savings[i][1]].concat(ruta_j.slice(1));
-                    if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
+                    if(calcularCargaRuta(nuevaRuta, demandas) <= capacidades[indGblCpc]){
                         rutas.push(nuevaRuta);
                     } else if(totalElementos == (clients + 2*longitudRutas) - 1){
                         rutas.push(ruta_j);
@@ -158,7 +166,7 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
                     }
                 } else{
                     let nuevaRuta = ruta_j.slice(0,-1).concat([savings[i][1], 0]);
-                    if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
+                    if(calcularCargaRuta(nuevaRuta, demandas) <= capacidades[indGblCpc]){
                         rutas.push(nuevaRuta);
                     } else if(totalElementos == (clients + 2*longitudRutas) - 1){
                         rutas.push(ruta_j);
@@ -184,7 +192,7 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
 
                 if(condicion3 == true && condicion4 == false){
                     let nuevaRuta = ruta_j.slice(0,-1).concat(ruta_i.slice(1));
-                    if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
+                    if(calcularCargaRuta(nuevaRuta, demandas) <= capacidades[indGblCpc]){
                         rutas.push(nuevaRuta);
                     } else{
                         rutas.push(ruta_i);
@@ -193,7 +201,7 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
                     
                 } else if (condicion3 == false && condicion4 == true){
                     let nuevaRuta = ruta_i.slice(0,-1).concat(ruta_j.slice(1));
-                    if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
+                    if(calcularCargaRuta(nuevaRuta, demandas) <= capacidades[indGblCpc]){
                         rutas.push(nuevaRuta);
                     } else{
                         rutas.push(ruta_i);
@@ -202,7 +210,7 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
                     }
                 } else{
                     let nuevaRuta = ruta_i.slice(0,-1).concat(ruta_j.slice(1));
-                    if(calcularCargaRuta(nuevaRuta, demandas) <= capacidad){
+                    if(calcularCargaRuta(nuevaRuta, demandas) <= capacidades[indGblCpc]){
                         rutas.push(nuevaRuta);
                     } else{
                         rutas.push(ruta_i);
@@ -211,12 +219,26 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
                 }
             }
         }
+
+        for(let j = 0; j < rutas.length; j++){
+            if(siguienteCapacidad(rutas[j], demandas, clients, capacidades[indGblCpc])){
+                let band = copiaRutas.some(copiaElement => JSON.stringify(copiaElement) === JSON.stringify(rutas[j]));
+
+                if(band == false){
+                    if(indGblCpc < capacidades.length - 1){
+                        indGblCpc++;
+                        rutasCreadas = 0;
+                    }
+                    copiaRutas.push(rutas[j]);
+                }
+            }
+        }
     }
     
     // console.log(savings);
     // console.log(rutas);
     // console.log(distanciaRutas(rutas, distanceMatrix));
-    // if(vehiculosSuficientes(rutas, vehicles)){
+    // if(rutas.length <= vehicles){
     //     console.log("La empresa tiene suficientes vehículos");
     // } else{
     //     console.log("La empresa no tiene suficientes vehículos");
