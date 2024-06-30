@@ -29,8 +29,10 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
 
     for(let i = 1; i <= clients; i++){
         for(let j = 1; j <= clients; j++){
-            let saving = distanceMatrix[0][i] + distanceMatrix[0][j] - distanceMatrix[i][j];
-            savings.push([saving, i, j]);
+            if(i !== j){
+                let saving = distanceMatrix[0][i] + distanceMatrix[0][j] - distanceMatrix[i][j];
+                savings.push([saving, i, j]);
+            }
         }
     }
 
