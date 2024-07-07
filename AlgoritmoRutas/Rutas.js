@@ -13,7 +13,7 @@ function comprobarPuntoInterior(ruta, cliente) {
 
 function comprobarPrimeroLista(rutas, cliente) {
     return rutas.some(ruta => ruta[1] === cliente);
-}  //Utilizamos el método some es mucho más eficaz que hacer un bucle for xddd
+}  
 
 function calcularCargaRuta(ruta, demandas){
     let cargaT = 0;
