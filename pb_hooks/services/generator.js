@@ -166,9 +166,8 @@ function generarRutas(distanceMatrix, timeMatrix, ventanasTiempo, vehicles, clie
         }
     }
     
-    console.log(savings);
-    console.log(rutas);
-    console.log(distanciaRutas(rutas, distanceMatrix));
+    console.log(JSON.stringify(rutas, null, 2));
+    console.log(JSON.stringify(distanciaRutas(rutas, distanceMatrix), null, 2));
     if(rutas.length <= vehicles){
         console.log("La empresa tiene suficientes vehículos");
     } else{
