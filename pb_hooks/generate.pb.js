@@ -181,5 +181,9 @@ routerAdd('POST', '/generate', (c) => {
 
   $app.logger().debug('plan', 'data', plan)
 
-  return c.json(200, plan)
+  const plans = $app.dao().findCollectionByNameOrId('plans')
+  const planRecord = newRecord(plans, plan)
+  $app.dao().saveRecord(planRecord)
+
+  return c.json(200, planRecord)
 });
