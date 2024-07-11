@@ -174,6 +174,11 @@ function generarRutas(distanceMatrix, timeMatrix, ventanasTiempo, vehicles, clie
     // } else{
     //     console.log("La empresa no tiene suficientes vehículos");
     // }
+    $app.logger().debug('data', 
+        'savings', savings,
+        'rutas', rutas,
+        'distanciaRutas', distanciaRutas(rutas, distanceMatrix)
+    );
 
     return rutas;
 }
