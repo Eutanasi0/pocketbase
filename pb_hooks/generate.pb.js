@@ -43,6 +43,12 @@ routerAdd('POST', '/generate', (c) => {
     )
   )
 
+  const duration_matrix = res.json.rows.map(row => 
+    row.elements.map(e =>
+      e.duration.value
+    )
+  )
+
   $app.logger().debug('distance matrix', 'data', distance_matrix)
 
   const raw_plan = generator(
@@ -60,7 +66,7 @@ routerAdd('POST', '/generate', (c) => {
   for (const [route_index, raw_route] of raw_plan.entries()) {
     const first_client = clients[raw_route[1] - 1]
     const first_segment_distance = distance_matrix[0][raw_route[1]]
-    const first_segment_duration = res.json.rows[0].elements[raw_route[1]].duration.value
+    const first_segment_duration = duration_matrix[0][raw_route[1]]
     
     // $app.logger().debug(`segment 0 of route ${route_index}`,  
     //   'from (depot)', depot.get('formatted_address'),
@@ -82,7 +88,7 @@ routerAdd('POST', '/generate', (c) => {
       const client_from = clients[raw_route[w_index] - 1]
       const client_to = clients[raw_route[w_index + 1] - 1]
       const current_segment_distance = distance_matrix[raw_route[w_index]][raw_route[w_index + 1]]
-      const current_segment_duration = res.json.rows[raw_route[w_index]].elements[raw_route[w_index + 1]].duration.value
+      const current_segment_duration = duration_matrix[raw_route[w_index]][raw_route[w_index + 1]]
 
       // $app.logger().debug(`segment ${w_index} of route ${route_index}`,  
       //   'from', client_from.formatted_address, 
@@ -103,7 +109,7 @@ routerAdd('POST', '/generate', (c) => {
 
     const last_client = clients[raw_route[raw_route.length - 2] - 1]
     const last_segment_distance = distance_matrix[raw_route[raw_route.length - 2]][0]
-    const last_segment_duration = res.json.rows[raw_route[raw_route.length - 2]].elements[0].duration.value
+    const last_segment_duration = duration_matrix[raw_route[raw_route.length - 2]][0]
 
     $app.logger().debug(`segment ${raw_route.length - 2} of route ${route_index}`,   
       'from', last_client.formatted_address,  
