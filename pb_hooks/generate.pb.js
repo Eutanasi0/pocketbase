@@ -53,7 +53,15 @@ routerAdd('POST', '/generate', (c) => {
     )
   )
 
-  $app.logger().debug('distance matrix', 'data', distance_matrix)
+  $app.logger().debug('inputs', 
+    'distance_matrix', distance_matrix,
+    'duration_matrix', duration_matrix,
+    'time_windows', time_windows,
+    'vehicles', vehicles,
+    'clients', clients.length,
+    'demands', demands,
+    'capacity', capacity
+  )
 
   const raw_plan = generator(
     distance_matrix,
