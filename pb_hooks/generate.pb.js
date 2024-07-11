@@ -75,8 +75,6 @@ routerAdd('POST', '/generate', (c) => {
     capacity
   )
 
-  const total_raw_routes = raw_plan.length
-
   $app.logger().debug('raw plan', 
     'data', raw_plan,
     'total_routes', total_raw_routes
@@ -162,14 +160,16 @@ routerAdd('POST', '/generate', (c) => {
     total_duration += route_duration
   }
 
-  routes.forEach((route) => {
-    const polyline = polylines(
+  const total_routes = routes.length
+  routes.forEach((route, i) => {
+    const res = polylines(
       depot.get('formatted_address'),
       depot.get('formatted_address'),
       route.clients.map(client => client.formatted_address),
       api_key
     )
-    $app.logger().debug('polyline', 'data', polyline)
+    route.polyline = res.json.routes[0].polyline.encodedPolyline
+    route.hue = i * (360 / total_routes)
   })
 
   const plan = {
