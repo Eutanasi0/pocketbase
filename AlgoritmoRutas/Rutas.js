@@ -23,7 +23,26 @@ function calcularCargaRuta(ruta, demandas){
     return cargaT;
 }
 
-function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
+function comprobarVentanaTiempo(ruta, timeMatrix, ventanasTiempo){
+    tiempoI = ventanasTiempo[ruta[1]][0];
+    tiempoF = tiempoI;
+    band = true;
+
+    for(let i=0; i < ruta.length - 1; i++){
+        tiempoF += timeMatrix[ruta[i]][ruta[i+1]];
+        tiempoF %= 24;
+        if(tiempoF > ventanasTiempo[ruta[i+1]][0] && tiempoF < ventanasTiempo[ruta[i+1]][1]){
+            band = true;
+        } else{
+            band = false;
+            break;
+        }
+    }
+
+    return band;
+}
+
+function generarRutas(distanceMatrix, timeMatrix, ventanasTiempo, vehicles, clients, demandas, capacidad){
     let rutas = [];
     let savings = [];
 
@@ -45,7 +64,9 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
         if(ruta_i == null && ruta_j == null){
             let nuevaRuta = [0, savings[i][1], savings[i][2], 0];
             let carga = calcularCargaRuta(nuevaRuta, demandas);
-            if(carga <= capacidad){
+            let ventanaT = comprobarVentanaTiempo(nuevaRuta, timeMatrix, ventanasTiempo);
+
+            if(carga <= capacidad && ventanaT == true){
                 rutas.push(nuevaRuta); 
             } 
         }
@@ -68,8 +89,9 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
                 }
 
                 let carga = calcularCargaRuta(nuevaRuta, demandas);
+                let ventanaT = comprobarVentanaTiempo(nuevaRuta, timeMatrix, ventanasTiempo);
 
-                if(carga <= capacidad){
+                if(carga <= capacidad && ventanaT == true){
                     rutas.push(nuevaRuta);
                 } else if(totalElementos == (clients + 2*longitudRutas) - 1){
                     rutas.push(ruta_i);
@@ -98,8 +120,9 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
                 }
 
                 let carga = calcularCargaRuta(nuevaRuta, demandas);
+                let ventanaT = comprobarVentanaTiempo(nuevaRuta, timeMatrix, ventanasTiempo);
 
-                if(carga <= capacidad){
+                if(carga <= capacidad && ventanaT == true){
                     rutas.push(nuevaRuta);
                 } else if(totalElementos == (clients + 2*longitudRutas) - 1){
                     rutas.push(ruta_j);
@@ -131,8 +154,9 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
                 }
 
                 let carga = calcularCargaRuta(nuevaRuta, demandas);
+                let ventanaT = comprobarVentanaTiempo(nuevaRuta, timeMatrix, ventanasTiempo);
 
-                if(carga <= capacidad){
+                if(carga <= capacidad && ventanaT == true){
                     rutas.push(nuevaRuta);
                 } else{
                     rutas.push(ruta_i);
@@ -153,7 +177,7 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
 
 }
 
-const matriz = [
+const matrizD = [
     [0, 25, 43, 57, 43, 61, 29, 41, 48, 71],
     [25, 0, 29, 34, 43, 68, 49, 66, 72, 91],
     [43, 29, 0, 52, 72, 96, 72, 81, 89, 114],
@@ -166,9 +190,36 @@ const matriz = [
     [71, 91, 114, 108, 65, 46, 43, 46, 36, 0]    
 ]
 
+const matrizT = [
+    [0,     0.5,    0.75,   1,      0.75,   1.25,   0.75,   1,      1.25,   1.5],
+    [0.5,   0,      0.5,    0.75,   1,      1.5,    1,      1.25,   1.5,    1.75],
+    [0.75,  0.5,    0,      1,      1.5,    2,      1.5,    1.75,   2,      2.25],
+    [1,     0.75,   1,      0,      0.75,   1.25,   1.25,   1.75,   1.75,   2],
+    [0.75,  1,      1.5,    0.75,   0,      0.75,   1,      1.5,    1.5,    1.5],
+    [1.25,  1.5,    2,      1.25,   0.75,   0,      1,      1.25,   1.25,   1],
+    [0.75,  1,      1.5,    1.25,   1,      1,      0,      0.75,   0.75,   1],
+    [1,     1.25,   1.75,   1.75,   1.5,    1.25,   0.75,   0,      0.25,   0.75],
+    [1.25,  1.5,    2,      1.75,   1.5,    1.25,   0.75,   0.25,   0,      0.75],
+    [1.5,   1.75,   2.25,   2,      1.5,    1,      1,      0.75,   0.75,   0]
+]
+
 const demandas = [0, 4, 6, 5, 4, 7, 3, 5, 4, 4]
-const capacidad = 23
+
+//Horas del día, de 0 a 24
+const ventanasTiempo = [
+    [0, 24], 
+    [8, 12], 
+    [8, 14], 
+    [10, 15], 
+    [9, 16], 
+    [8, 17], 
+    [15, 18], 
+    [10, 19], 
+    [8, 20],
+    [16, 21]  
+];
+const capacidad = 15
 const vehicles = 3
 const clients = 9
 
-generarRutas(matriz, vehicles, clients, demandas, capacidad)
+generarRutas(matrizD, matrizT, ventanasTiempo, vehicles, clients, demandas, capacidad)
