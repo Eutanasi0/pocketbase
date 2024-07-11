@@ -181,7 +181,5 @@ routerAdd('POST', '/generate', (c) => {
 
   $app.logger().debug('plan', 'data', plan)
 
-  console.log(JSON.stringify(plan, null, 2))
-
-  return c.json(200)
+  return c.json(200, plan)
 });
