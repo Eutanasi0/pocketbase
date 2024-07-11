@@ -65,6 +65,8 @@ routerAdd('POST', '/generate', (c) => {
     capacity
   )
 
+  $app.logger().debug('raw plan', 'data', raw_plan)
+
   const routes = []
   let total_distance = 0
   let total_duration = 0
