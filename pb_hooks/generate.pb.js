@@ -1,5 +1,7 @@
 routerAdd('POST', '/generate', (c) => {
   const generator = require(`${__hooks}/services/generator.js`)
+  const polylines = require(`${__hooks}/services/polylines.js`)
+
   const api_key = require(`${__hooks}/apikey.js`)
 
   const body = $apis.requestInfo(c).data
@@ -86,6 +88,7 @@ routerAdd('POST', '/generate', (c) => {
 
   for (const [route_index, raw_route] of raw_plan.entries()) {
     const first_client = clients[raw_route[1] - 1]
+
     const first_segment_distance = distance_matrix[0][raw_route[1]]
     const first_segment_duration = duration_matrix[0][raw_route[1]]
     
@@ -132,12 +135,12 @@ routerAdd('POST', '/generate', (c) => {
     const last_segment_distance = distance_matrix[raw_route[raw_route.length - 2]][0]
     const last_segment_duration = duration_matrix[raw_route[raw_route.length - 2]][0]
 
-    $app.logger().debug(`segment ${raw_route.length - 2} of route ${route_index}`,   
-      'from', last_client.formatted_address,  
-      'to (depot)', depot.get('formatted_address'),
-      'distance', last_segment_distance,
-      'duration', last_segment_duration
-    )
+    // $app.logger().debug(`segment ${raw_route.length - 2} of route ${route_index}`,   
+    //   'from', last_client.formatted_address,  
+    //   'to (depot)', depot.get('formatted_address'),
+    //   'distance', last_segment_distance,
+    //   'duration', last_segment_duration
+    // )
 
     route_clients.push(last_client)
     route_segments.push({
@@ -158,6 +161,16 @@ routerAdd('POST', '/generate', (c) => {
     total_distance += route_distance
     total_duration += route_duration
   }
+
+  routes.forEach((route) => {
+    const polyline = polylines(
+      depot.get('formatted_address'),
+      depot.get('formatted_address'),
+      route.clients.map(client => client.formatted_address),
+      api_key
+    )
+    $app.logger().debug('polyline', 'data', polyline)
+  })
 
   const plan = {
     title: body.title,
