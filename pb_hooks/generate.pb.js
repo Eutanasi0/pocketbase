@@ -49,7 +49,7 @@ routerAdd('POST', '/generate', (c) => {
 
   const duration_matrix = res.json.rows.map(row => 
     row.elements.map(e =>
-      e.duration.value
+      e.duration.value / 3600
     )
   )
 
