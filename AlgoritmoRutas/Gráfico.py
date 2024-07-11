@@ -15,10 +15,6 @@ distance_matrix = [
     [71, 91, 114, 108, 65, 46, 43, 46, 36, 0]
 ]
 
-ventanas_tiempo = [
-    (0, 1000), (10, 50), (20, 60), (30, 70), (40, 80),
-    (50, 90), (60, 100), (70, 110), (80, 120), (90, 130)
-]
 
 distancia_rutas = [108, 100, 116, 178]
 vehicles = 3
@@ -28,7 +24,7 @@ G = nx.DiGraph()
 
 # Agregar nodos con ventanas de tiempo
 for i in range(len(distance_matrix)):
-    G.add_node(i, label=f'{i}\nTW: {ventanas_tiempo[i][0]}-{ventanas_tiempo[i][1]}')
+    G.add_node(i, label=f'{i}')
 
 # Agregar aristas con distancias
 for i in range(len(distance_matrix)):
