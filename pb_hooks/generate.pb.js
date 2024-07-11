@@ -80,6 +80,7 @@ routerAdd('POST', '/generate', (c) => {
   let total_duration = 0
 
   for (const [route_index, raw_route] of raw_plan.entries()) {
+    let route_demand = 0
     const first_client = clients[raw_route[1] - 1]
 
     const first_segment_distance = distance_matrix[0][raw_route[1]]
@@ -103,6 +104,10 @@ routerAdd('POST', '/generate', (c) => {
 
     for (let w_index = 1; w_index < raw_route.length - 2; w_index++) {
       const client_from = clients[raw_route[w_index] - 1]
+
+      const client_from_demand = client_from.products.reduce((total, curr) => (curr.amount_requested * curr.unit_weight) + total, 0)
+      route_demand += client_from_demand
+
       const client_to = clients[raw_route[w_index + 1] - 1]
       const current_segment_distance = distance_matrix[raw_route[w_index]][raw_route[w_index + 1]]
       const current_segment_duration = duration_matrix[raw_route[w_index]][raw_route[w_index + 1]]
@@ -125,6 +130,10 @@ routerAdd('POST', '/generate', (c) => {
     }
 
     const last_client = clients[raw_route[raw_route.length - 2] - 1]
+
+    const last_client_demand = last_client.products.reduce((total, curr) => (curr.amount_requested * curr.unit_weight) + total, 0)
+    route_demand += last_client_demand
+
     const last_segment_distance = distance_matrix[raw_route[raw_route.length - 2]][0]
     const last_segment_duration = duration_matrix[raw_route[raw_route.length - 2]][0]
 
@@ -147,6 +156,7 @@ routerAdd('POST', '/generate', (c) => {
     routes.push({
       route_distance,
       route_duration,
+      route_demand,
       clients: route_clients,
       segments: route_segments,
     })
