@@ -6,17 +6,21 @@ routerAdd('POST', '/generate', (c) => {
   const auth_user = c.get('authRecord')
   const depot_id = auth_user.get('depot')
 
-  const vehicles = $app.dao().findRecordsByFilter(
-    'vehicles',
-    `depot = '${depot_id}'`
-  )
-
   const clients = body.clients
+  const vehicles = body.vehicles
+  const capacity = body.capacity
 
   const demands = [0]
   body.clients.forEach(client => 
     demands.push(
       client.products.reduce((total, curr) => (curr.amount_requested * curr.unit_weight) + total, 0)
+    )
+  )
+
+  const time_windows = [[0, 24]]
+  body.clients.forEach(client => 
+    time_windows.push(
+      client.time_window
     )
   )
 
@@ -53,10 +57,12 @@ routerAdd('POST', '/generate', (c) => {
 
   const raw_plan = generator(
     distance_matrix,
-    vehicles[0].get('instances'),
+    duration_matrix,
+    time_windows,
+    vehicles,
     clients.length,
     demands,
-    vehicles[0].get('capacity')
+    capacity
   )
 
   const routes = []
@@ -151,6 +157,8 @@ routerAdd('POST', '/generate', (c) => {
   }
 
   $app.logger().debug('plan', 'data', plan)
+
+  console.log(JSON.stringify(plan, null, 2))
 
   return c.json(200)
 });
