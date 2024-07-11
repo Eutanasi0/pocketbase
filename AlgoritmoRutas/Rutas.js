@@ -30,7 +30,7 @@ function comprobarVentanaTiempo(ruta, timeMatrix, ventanasTiempo){
     for(let i=0; i < ruta.length - 1; i++){
         tiempo += timeMatrix[ruta[i]][ruta[i+1]];
         tiempo %= 24;
-        if(tiempo > ventanasTiempo[ruta[i+1]][0] && tiempo < ventanasTiempo[ruta[i+1]][1]){
+        if(tiempo >= ventanasTiempo[ruta[i+1]][0] && tiempo <= ventanasTiempo[ruta[i+1]][1]){
             band = true;
         } else{
             band = false;
@@ -112,6 +112,7 @@ function generarRutas(distanceMatrix, timeMatrix, ventanasTiempo, vehicles, clie
                 let nuevaRuta;
 
                 rutas.splice(rutas.indexOf(ruta_j), 1);
+                
                 if(condicion2 == true){
                     nuevaRuta  = [0, savings[i][1]].concat(ruta_j.slice(1));
                 } else{
@@ -173,8 +174,12 @@ function generarRutas(distanceMatrix, timeMatrix, ventanasTiempo, vehicles, clie
     } else{
         console.log("La empresa no tiene suficientes vehículos");
     }
-
 }
+
+const matriz = [
+    [{d: 0, t: 0}, {d: 25, t: 0.5}, {d: 43, t: 0.75}, {d:57, t:1}, {d:43, t:0.75}, {d:61, t:1.25}, {d:29, t:0.75}, {d:41, t:1}, {d:48, t:1.25}, {d:71, t:1.5}],
+
+]
 
 const matrizD = [
     [0, 25, 43, 57, 43, 61, 29, 41, 48, 71],
