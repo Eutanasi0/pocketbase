@@ -141,19 +141,16 @@ function generarRutas(distanceMatrix, vehicles, clients, demandas, capacidad){
             }
         }
     }
+    
     console.log(savings);
     console.log(rutas);
-    console.log("Rutas generadas:");
-    rutas.forEach(ruta => console.log(ruta));
-    
-    console.log("Distancias de las rutas:");
     console.log(distanciaRutas(rutas, distanceMatrix));
-    
     if(rutas.length <= vehicles){
-        console.log("La empresa tiene suficientes vehículos para cubrir todas las rutas.");
+        console.log("La empresa tiene suficientes vehículos");
     } else{
-        console.log("La empresa no tiene suficientes vehículos para cubrir todas las rutas.");
+        console.log("La empresa no tiene suficientes vehículos");
     }
+
 }
 
 const matriz = [
@@ -174,4 +171,4 @@ const capacidad = 23
 const vehicles = 3
 const clients = 9
 
-generarRutas(matriz, vehicles, clients, demandas, capacidad);
+generarRutas(matriz, vehicles, clients, demandas, capacidad)
