@@ -204,7 +204,6 @@ const matrizT = [
 
 const demandas = [0, 4, 6, 5, 4, 7, 3, 5, 4, 4]
 
-//Horas del día, de 0 a 24
 const ventanasTiempo = [
     [0, 24], 
     [8, 12], 
@@ -217,7 +216,7 @@ const ventanasTiempo = [
     [8, 20],
     [16, 21]  
 ];
-const capacidad = 15
+const capacidad = 23
 const vehicles = 3
 const clients = 9
 
