@@ -24,14 +24,13 @@ function calcularCargaRuta(ruta, demandas){
 }
 
 function comprobarVentanaTiempo(ruta, timeMatrix, ventanasTiempo){
-    tiempoI = ventanasTiempo[ruta[1]][0];
-    tiempoF = tiempoI;
+    tiempo = ventanasTiempo[ruta[1]][0] - timeMatrix[0][ruta[1]]/2;
     band = true;
 
     for(let i=0; i < ruta.length - 1; i++){
-        tiempoF += timeMatrix[ruta[i]][ruta[i+1]];
-        tiempoF %= 24;
-        if(tiempoF > ventanasTiempo[ruta[i+1]][0] && tiempoF < ventanasTiempo[ruta[i+1]][1]){
+        tiempo += timeMatrix[ruta[i]][ruta[i+1]];
+        tiempo %= 24;
+        if(tiempo > ventanasTiempo[ruta[i+1]][0] && tiempo < ventanasTiempo[ruta[i+1]][1]){
             band = true;
         } else{
             band = false;
