@@ -166,19 +166,14 @@ function generarRutas(distanceMatrix, timeMatrix, ventanasTiempo, vehicles, clie
         }
     }
     
-    // console.log(savings);
-    // console.log(rutas);
-    // console.log(distanciaRutas(rutas, distanceMatrix));
-    // if(rutas.length <= vehicles){
-    //     console.log("La empresa tiene suficientes vehículos");
-    // } else{
-    //     console.log("La empresa no tiene suficientes vehículos");
-    // }
-    $app.logger().debug('data', 
-        'savings', savings,
-        'rutas', rutas,
-        'distanciaRutas', distanciaRutas(rutas, distanceMatrix)
-    );
+    console.log(savings);
+    console.log(rutas);
+    console.log(distanciaRutas(rutas, distanceMatrix));
+    if(rutas.length <= vehicles){
+        console.log("La empresa tiene suficientes vehículos");
+    } else{
+        console.log("La empresa no tiene suficientes vehículos");
+    }
 
     return rutas;
 }
